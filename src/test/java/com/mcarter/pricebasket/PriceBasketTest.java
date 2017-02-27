@@ -34,8 +34,8 @@ public class PriceBasketTest {
 	public void usesPerItemDiscountInFinalCalculation() {
 		Basket basket = new Basket();
 		basket.add("Apples");
-		// basket.add("Apples");
-		// basket.add("Apples");
+		basket.add("Apples");
+		basket.add("Apples");
 		basket.add("Milk");
 		basket.add("Bread");
 		assertThat(basket.getTotalWithDiscount(new Discount() {
@@ -51,10 +51,10 @@ public class PriceBasketTest {
 					if (entry.getKey().equalsIgnoreCase("APPLES")) {
 						cost -= 10;
 					}
-					return cost;
+					return cost * entry.getValue();
 				};
 			}
-		}), is(300));
+		}), is(480));
 	}
 	//
 	// @Test
