@@ -15,17 +15,16 @@ import com.mcarter.pricebasket.items.Item;
 public class Basket {
 
 	private Collection<Item> items = new ArrayList<>();
-	private ToIntFunction<Item> calculator;
-
-	public Basket(ToIntFunction<Item> calculator) {
-		this.calculator = calculator;
-	}
 
 	public void add(Item item) {
 		items.add(item);
 	}
 
 	public int getTotal() {
-		return items.stream().mapToInt(calculator).sum();
+		return items.stream().mapToInt(Item::getCost).sum();
+	}
+
+	public int getTotalWithDiscount(ToIntFunction<Item> discountFunction) {
+		return items.stream().mapToInt(discountFunction).sum();
 	}
 }
