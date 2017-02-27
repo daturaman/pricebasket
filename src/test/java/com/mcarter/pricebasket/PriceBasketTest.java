@@ -28,8 +28,8 @@ public class PriceBasketTest {
 		return 0;
 	};
 
-	//if item instanceof BRead
-	//and items contains 2 soups
+	// if item instanceof BRead
+	// and items contains 2 soups
 
 	@Test
 	public void calculatesTotalCostOfItemsWithNoDiscountsApplied() {
@@ -57,12 +57,14 @@ public class PriceBasketTest {
 		basket.add(new Soup(65));
 		basket.add(new Soup(65));
 		basket.add(new Soup(65));
-		basket.add(new Bread(80));//Should cost £0.40 after multi buy discount
+		basket.add(new Bread(80));// Should cost £0.40 after multi buy discount
 		final Discount soupMultiBuy = items -> {
+			long breadVoucherCount = items.stream().filter(item -> item instanceof Bread).count();
 			int soupCount = 0;
 			int total = 0;
 			for (Item item : items) {
-				if (item instanceof Soup) soupCount++;
+				if (item instanceof Soup)
+					soupCount++;
 				if ((item instanceof Bread) && soupCount == 2) {
 					total += item.getCost() / 2;
 					soupCount = 0;
