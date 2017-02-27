@@ -24,6 +24,13 @@ public class PriceBasketTest {
 		return cost;
 	};
 
+	private final ToIntFunction<Item> soupMultiBuyDiscount = item -> {
+		return 0;
+	};
+
+	//if item instanceof BRead
+	//and items contains 2 soups
+
 	@Test
 	public void calculatesTotalCostOfItemsWithNoDiscountsApplied() {
 		Basket basket = new Basket();
@@ -45,12 +52,26 @@ public class PriceBasketTest {
 	}
 
 	@Test
-	@Ignore
-	public void usesMultiBuyDiscountInFinalCalculation() {
+	public void usesOneMultiBuyDiscountInFinalCalculation() {
 		Basket basket = new Basket();
 		basket.add(new Soup(65));
 		basket.add(new Soup(65));
+		basket.add(new Soup(65));
 		basket.add(new Bread(80));//Should cost £0.40 after multi buy discount
-		assertThat(basket.getTotalWithDiscount(appleDiscount), is(160));
+		final Discount soupMultiBuy = items -> {
+			int soupCount = 0;
+			int total = 0;
+			for (Item item : items) {
+				if (item instanceof Soup) soupCount++;
+				if ((item instanceof Bread) && soupCount == 2) {
+					total += item.getCost() / 2;
+					soupCount = 0;
+				} else {
+					total += item.getCost();
+				}
+			}
+			return total;
+		};
+		assertThat(basket.getTotalWithDiscount(soupMultiBuy), is(235));
 	}
 }
