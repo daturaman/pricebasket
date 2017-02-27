@@ -7,14 +7,14 @@
  */
 package com.mcarter.pricebasket;
 
-import java.util.Collection;
-
-import com.mcarter.pricebasket.items.Item;
+import java.util.Map;
+import java.util.function.ToIntFunction;
 
 /**
  * @author mcarter
  */
-@FunctionalInterface
 public interface Discount {
-	int apply(Collection<Item> items);
+	String getItem();
+
+	ToIntFunction<Map.Entry<String, Integer>> getDiscount();
 }
