@@ -10,7 +10,7 @@ package com.mcarter.pricebasket.items;
 /**
  * @author mcarter
  */
-public class Soup implements Item {
+public class Soup extends Item {
 	private final int cost;
 
 	public Soup(int cost) {
@@ -20,5 +20,10 @@ public class Soup implements Item {
 	@Override
 	public int getCost() {
 		return cost;
+	}
+
+	@Override
+	public String getName() {
+		return "Soup";
 	}
 }

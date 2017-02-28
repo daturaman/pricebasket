@@ -1,6 +1,6 @@
 package com.mcarter.pricebasket.items;
 
-public class Apples implements Item {
+public class Apples extends Item {
 
 	private int cost;
 
@@ -10,5 +10,10 @@ public class Apples implements Item {
 
 	public int getCost() {
 		return cost;
+	}
+
+	@Override
+	public String getName() {
+		return "Apples";
 	}
 }

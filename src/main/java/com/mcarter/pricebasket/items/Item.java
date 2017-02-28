@@ -1,6 +1,18 @@
 package com.mcarter.pricebasket.items;
 
-public interface Item {
+public abstract class Item {
 
-	int getCost();
+	public abstract int getCost();
+
+	public abstract String getName();
+
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return getName().equals(obj);
+	}
 }
