@@ -7,6 +7,8 @@
  */
 package com.mcarter.pricebasket.items;
 
+import java.util.Objects;
+
 /**
  * Factory for creating {@link Item}s from a string representation.
  * 
@@ -15,6 +17,7 @@ package com.mcarter.pricebasket.items;
 public class ItemFactory {
 
 	public static Item createItem(String name) {
+		Objects.requireNonNull(name, "Name cannot be null");
 		Item item;
 		switch (name) {
 		case "Apples":
