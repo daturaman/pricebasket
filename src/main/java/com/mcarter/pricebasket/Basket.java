@@ -24,7 +24,6 @@ public class Basket {
 	}
 
 	public Basket() {
-
 	}
 
 	public void add(String itemName) {

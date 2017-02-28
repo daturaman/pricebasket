@@ -13,5 +13,8 @@ package com.mcarter.pricebasket;
 public class PriceBasket {
 	public static void main(String [] args){
 		if(!args[0].equals("PriceBasket"))throw new IllegalArgumentException("Args must start with 'PriceBasket'");
+//		Subtotal: £3.10
+//		Apples 10% off: -10p
+//		Total: £3.00
 	}
 }
