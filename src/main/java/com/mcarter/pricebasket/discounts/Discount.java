@@ -49,6 +49,7 @@ public abstract class Discount {
      * @return the total amount that was discounted.
      */
     public IntStream apply(Collection<Item> items) {
+        //TODO Need to call map(applyDiscount) so I can return a Stream<Item>
         return items.stream().filter(item -> item.getName().equals(getItem())).mapToInt(applyDiscount());
     }
 
