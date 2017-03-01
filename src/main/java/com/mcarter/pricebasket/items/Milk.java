@@ -14,7 +14,7 @@ package com.mcarter.pricebasket.items;
  */
 public class Milk extends Item {
 
-	private int cost;
+	private final int cost;
 
 	public Milk(int cost) {
 		this.cost = cost;

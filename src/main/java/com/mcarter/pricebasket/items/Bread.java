@@ -14,7 +14,7 @@ package com.mcarter.pricebasket.items;
  */
 public class Bread extends Item {
 
-	private int cost;
+	private final int cost;
 
 	public Bread(int cost) {
 		this.cost = cost;

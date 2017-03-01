@@ -1,12 +1,11 @@
 package com.mcarter.pricebasket;
 
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.Collections;
 
 import com.mcarter.pricebasket.discounts.ApplesDiscount;
 import org.junit.After;
@@ -34,8 +33,15 @@ public class PriceBasketTest {
 	public void printsExpectedMessageForBasketWithoutDiscounts() {
 		PriceBasket.basket = new Basket(singletonList(new ApplesDiscount()));
 		PriceBasket.main(new String[] { "PriceBasket", "Milk", "Milk", "Bread" });
-		final String expectedOutput = "Subtotal: �3.40\n(No offers available)\nTotal: �3.40";
-		assertEquals(expectedOutput, outContent.toString());
+		final String expectedOutput = "Subtotal: £3.40\n(No offers available)\nTotal: £3.40\n";
+		assertThat(outContent.toString(), is(equalTo(expectedOutput)));
 	}
 
+	@Test
+	public void printsExpectedMessageForBasketWithDiscounts() {
+		PriceBasket.basket = new Basket(singletonList(new ApplesDiscount()));
+		PriceBasket.main(new String[] { "PriceBasket", "Apples", "Milk", "Bread" });
+		final String expectedOutput = "Subtotal: £3.10\nApples 10% off: -10p\nTotal: £3.00\n";
+		assertThat(outContent.toString(), is(equalTo(expectedOutput)));
+	}
 }

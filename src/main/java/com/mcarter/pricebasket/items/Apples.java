@@ -2,7 +2,7 @@ package com.mcarter.pricebasket.items;
 
 public class Apples extends Item {
 
-	private int cost;
+	private final int cost;
 
 	public Apples(int cost) {
 		this.cost = cost;

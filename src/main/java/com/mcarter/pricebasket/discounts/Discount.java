@@ -7,75 +7,79 @@
  */
 package com.mcarter.pricebasket.discounts;
 
-import com.mcarter.pricebasket.items.Item;
-
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.function.ToIntFunction;
-import java.util.stream.IntStream;
+
+import com.mcarter.pricebasket.items.Item;
 
 /**
  * Defines a discount that can be applied to {@link Item}s of a specified type.
  *
  * @author mcarter
  */
-public abstract class Discount {
-    /**
-     * Gets the name of the Item being discounted.
-     *
-     * @return name of the item being discounted as a string.
-     */
-    public abstract String getItem();
+public abstract class Discount<T extends Item> {
+
+	private final Collection<Item> discountedItems = new ArrayList<>();
 
     /**
-     * Gets the discount as a percentage.
-     *
-     * @return the discount percentage as an integer.
-     */
-    public abstract int getDiscountPercent();
+	 * Gets the name of the Item being discounted.
+	 *
+	 * @return name of the item being discounted as a string.
+	 */
+	public abstract T getDiscountItem();
 
-    /**
-     * Provides a printable description of this Discount.
-     *
-     * @return a description of the Discount.
-     */
-    public String getDescription() {
-        return String.format("%1$s %2$d off: -%3$d p", getItem(), getDiscountPercent(), 10);//TODO
-    }
+	/**
+	 * Gets the discount as a percentage.
+	 *
+	 * @return the discount percentage as an integer.
+	 */
+	public abstract int getDiscountPercent();
 
-    /**
-     * Applies this Discount to the all targets in a collection of items.
-     *
-     * @param items a collection that may contain the targeted item.
-     * @return the total amount that was discounted.
-     */
-    public IntStream apply(Collection<Item> items) {
-        //TODO Need to call map(applyDiscount) so I can return a Stream<Item>
-        return items.stream().filter(item -> item.getName().equals(getItem())).mapToInt(applyDiscount());
-    }
+	/**
+	 * Applies this Discount to the all targets in a collection of items.
+	 *
+	 * @param items a collection that may contain the targeted item.
+	 * @return the total amount that was discounted.
+	 */
+	public int apply(Collection<Item> items) {
+		return items.stream().filter(item -> item.getName().equals(getDiscountItem().getName())).mapToInt(applyDiscount())
+                    .sum();
+	}
 
-    /**
-     * Provides an {@link ToIntFunction} that can be apply this Discount to a stream containing
-     * items of the target type.
-     *
-     * @return an {@link ToIntFunction} to be used in a stream operation.
-     */
-    ToIntFunction<Item> applyDiscount() {
-        return item -> {
-            int discount = 0;
-            if (item.getName().equals(getItem())) {
-                discount = calculatePercentage(item.getCost());
-            }
-            return discount;
-        };
-    }
+	/**
+	 * Returns a list of all items that had a discount applied to them.
+	 *
+	 * @return a {@link Collection} of items that have all been discounted
+	 */
+	public Collection<Item> discountedItems() {
+		return Collections.unmodifiableCollection(discountedItems);
+	}
 
-    /**
-     * Calculates the actual amount to be discounted.
-     *
-     * @param cost the cost of the item.
-     * @return the amount to be discounted.
-     */
-    private int calculatePercentage(int cost) {
-        return (int) (cost * (getDiscountPercent() / 100.0f));
-    }
+	/**
+	 * Calculates the actual amount to be discounted.
+	 *
+	 * @return the amount to be discounted.
+	 */
+	public int getDiscountedAmount() {
+		return (int) (getDiscountItem().getCost() * (getDiscountPercent() / 100.0f));
+	}
+
+	/**
+	 * Provides an {@link ToIntFunction} that can be apply this Discount to a stream containing items of the target
+	 * type.
+	 *
+	 * @return an {@link ToIntFunction} to be used in a stream operation.
+	 */
+	ToIntFunction<Item> applyDiscount() {
+		return item -> {
+			int discount = 0;
+			if (item.getName().equals(getDiscountItem().getName())) {
+				discount = getDiscountedAmount();
+				discountedItems.add(item);
+			}
+			return discount;
+		};
+	}
 }
