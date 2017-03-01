@@ -1,90 +1,53 @@
 package com.mcarter.pricebasket;
 
+import com.mcarter.pricebasket.discounts.ApplesDiscount;
+import com.mcarter.pricebasket.discounts.BreadDiscount;
+import com.mcarter.pricebasket.discounts.BreadMultiBuySoupDiscount;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
-import org.junit.Test;
-
-import com.mcarter.pricebasket.discounts.Discount;
-import com.mcarter.pricebasket.items.Item;
-import com.mcarter.pricebasket.items.Soup;
-
 public class BasketTest {
 
-	@Test
-	public void calculatesTotalCostOfItemsWithNoDiscountsApplied() {
-		Basket basket = new Basket();
-		basket.add("Apples");
-		basket.add("Milk");
-		basket.add("Bread");
-		assertThat(basket.getTotal(), is(310));
-	}
+    private static final String APPLES = "Apples";
+    private static final String MILK = "Milk";
+    private static final String BREAD = "Bread";
+    private static final String SOUP = "Soup";
 
-	@Test
-	public void usesPerItemDiscountsInFinalCalculation() {
-		final Discount appleDiscount = new Discount() {
-			@Override
-			public String getItem() {
-				return "Apples";
-			}
+    @Test
+    public void calculatesTotalCostOfItemsWithNoDiscountsApplied() {
+        Basket basket = new Basket(Collections.emptyList());
+        basket.add(APPLES);
+        basket.add(MILK);
+        basket.add(BREAD);
+        assertThat(basket.getTotal(), is(310));
+    }
 
-			@Override
-			public int getDiscountPercent() {
-				return 10;
-			}
-		};
-		final Discount breadDiscount = new Discount() {
-			@Override
-			public String getItem() {
-				return "Bread";
-			}
+    @Test
+    public void usesPerItemDiscountsInFinalCalculation() {
+        Basket basket = new Basket(Arrays.asList(new ApplesDiscount(), new BreadDiscount()));
+        basket.add(APPLES);
+        basket.add(APPLES);
+        basket.add(APPLES);
+        basket.add(MILK);
+        basket.add(BREAD);
+        assertThat(basket.getTotalWithDiscounts(), is(460));
+    }
 
-			@Override
-			public int getDiscountPercent() {
-				return 25;
-			}
-		};
-		Basket basket = new Basket(Arrays.asList(appleDiscount, breadDiscount));
-		basket.add("Apples");
-		basket.add("Apples");
-		basket.add("Apples");
-		basket.add("Milk");
-		basket.add("Bread");
-		assertThat(basket.getTotalWithDiscounts(), is(460));
-	}
-
-	@Test
-	public void usesOneMultiBuyDiscountInFinalCalculation() {
-		final Discount breadMultiDiscount = new Discount() {
-			@Override
-			public String getItem() {
-				return "Bread";
-			}
-
-			@Override
-			public int getDiscountPercent() {
-				return 50;
-			}
-
-			@Override
-			public int apply(Collection<Item> items) {
-				long soupCount = items.stream().filter(item -> item instanceof Soup).count();
-				return items.stream().filter(item -> item.getName().equals(getItem())).limit(soupCount / 2)
-						.mapToInt(applyDiscount()).sum();
-			}
-		};
-		Basket basket = new Basket(Collections.singletonList(breadMultiDiscount));
-		basket.add("Bread");
-		basket.add("Soup");
-		basket.add("Soup");
-		basket.add("Soup");
-		basket.add("Bread");
-		basket.add("Soup");
-		basket.add("Soup");
-		assertThat(basket.getTotalWithDiscounts(), is(405));
-	}
+    @Test
+    public void usesOneMultiBuyDiscountInFinalCalculation() {
+        Basket basket = new Basket(Collections.singletonList(new BreadMultiBuySoupDiscount()));
+        basket.add(BREAD);
+        basket.add(SOUP);
+        basket.add(SOUP);
+        basket.add(SOUP);
+        basket.add(BREAD);
+        basket.add(SOUP);
+        basket.add(SOUP);
+        assertThat(basket.getTotalWithDiscounts(), is(405));
+    }
 }

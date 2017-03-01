@@ -1,10 +1,14 @@
 package com.mcarter.pricebasket;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.Collections;
 
+import com.mcarter.pricebasket.discounts.ApplesDiscount;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +32,9 @@ public class PriceBasketTest {
 
 	@Test
 	public void printsExpectedMessageForBasketWithoutDiscounts() {
-		PriceBasket.main(new String[] { "PriceBasket", "Apples", "Milk", "Bread" });
-		final String expectedOutput = "Subtotal: £3.10\n(No offers available)\nTotal: £3.10";
+		PriceBasket.basket = new Basket(singletonList(new ApplesDiscount()));
+		PriceBasket.main(new String[] { "PriceBasket", "Milk", "Milk", "Bread" });
+		final String expectedOutput = "Subtotal: £3.40\n(No offers available)\nTotal: £3.40";
 		assertEquals(expectedOutput, outContent.toString());
 	}
 
