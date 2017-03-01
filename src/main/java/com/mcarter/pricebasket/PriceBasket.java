@@ -7,8 +7,6 @@
  */
 package com.mcarter.pricebasket;
 
-import static java.util.Collections.singletonList;
-
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,10 +22,11 @@ import com.mcarter.pricebasket.discounts.Discount;
  * 
  * @author mcarter
  */
-public class PriceBasket {
+class PriceBasket {
 
 	private static final int MIN_ARGS = 2;
     private static final NumberFormat NF = NumberFormat.getCurrencyInstance(Locale.UK);
+	private static final double PERCENT = 100.0;
 	static Basket basket  = new Basket(Arrays.asList(new ApplesDiscount(), new BreadMultiBuySoupDiscount()));
 
 	public static void main(String[] args) {
@@ -38,19 +37,27 @@ public class PriceBasket {
 			throw new IllegalArgumentException("Args must start with 'PriceBasket'");
 		}
 		for (int i = 1; i < args.length; i++) {
-			basket.add(args[i]);
+			try {
+				basket.add(args[i]);
+			} catch (IllegalArgumentException e) {
+				System.err.printf("Error: unknown item '%s' added to basket.\n", args[i]);
+				return;
+			}
 		}
 
-		System.out.printf("Subtotal: %s\n", NF.format(basket.getTotal()/100.0));
+		System.out.printf("Subtotal: %s\n", NF.format(basket.getTotal()/ PERCENT));
 		int totalWithDiscounts = basket.getTotalWithDiscounts();
 		Collection<Discount> appliedDiscounts = basket.getDiscounts().stream()
                                                       .filter(discount -> !discount.discountedItems().isEmpty()).collect(Collectors.toList());
 		if (appliedDiscounts.isEmpty()) {
 			System.out.println("(No offers available)");
 		} else {
-		    appliedDiscounts.forEach(discount -> System.out.printf("%s %s%% off: -%sp\n", discount.getDiscountItem().getName(), discount.getDiscountPercent(), discount.getDiscountedAmount()));
-
+		    for(Discount discount : appliedDiscounts){
+				for(Object item : discount.discountedItems()){
+					System.out.printf("%s %s%% off: -%sp\n", discount.getDiscountItem().getName(), discount.getDiscountPercent(), discount.getDiscountedAmount());
+				}
+			}
 		}
-		System.out.printf("Total: %s\n", NF.format(totalWithDiscounts/100.0));
+		System.out.printf("Total: %s\n", NF.format(totalWithDiscounts/ PERCENT));
 	}
 }

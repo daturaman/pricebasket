@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.mcarter.pricebasket.discounts.Discount;
 import com.mcarter.pricebasket.items.Item;
@@ -16,7 +15,7 @@ import com.mcarter.pricebasket.items.ItemFactory;
  *
  * @author mcarter
  */
-public class Basket {
+class Basket {
 
 	private final Collection<Item> items = new ArrayList<>();
 	private final Collection<Discount> discounts;
@@ -26,7 +25,7 @@ public class Basket {
 	 *
 	 * @param discounts the discounts to be applied to this basket.
 	 */
-	public Basket(Collection<Discount> discounts) {
+	Basket(Collection<Discount> discounts) {
 		Objects.requireNonNull(discounts, "Discounts cannot be null");
 		this.discounts = discounts;
 	}
@@ -36,7 +35,7 @@ public class Basket {
 	 *
 	 * @param itemName the name of a type of Item.
 	 */
-	public void add(String itemName) {
+	void add(String itemName) {
 		Item item = ItemFactory.createItem(itemName);
 		items.add(item);
 	}
@@ -46,7 +45,7 @@ public class Basket {
 	 *
 	 * @return the total cost without discounts.
 	 */
-	public int getTotal() {
+	int getTotal() {
 		return items.stream().mapToInt(Item::getCost).sum();
 	}
 
@@ -55,7 +54,7 @@ public class Basket {
 	 *
 	 * @return the total cost, including discounts.
 	 */
-	public int getTotalWithDiscounts() {
+	int getTotalWithDiscounts() {
 		int total = getTotal();
 		for (Discount discount : discounts) {
 			total -= discount.apply(items);
@@ -68,7 +67,7 @@ public class Basket {
 	 *
 	 * @return a collection of {@link Discount}s
 	 */
-	public Collection<Discount> getDiscounts() {
+	Collection<Discount> getDiscounts() {
 		return Collections.unmodifiableCollection(discounts);
 	}
 }

@@ -1,8 +1,8 @@
 package com.mcarter.pricebasket.items;
 
-public abstract class Item {
+public interface Item {
 
-    public abstract int getCost();
+    int getCost();
 
-    public abstract String getName();
+    String getName();
 }

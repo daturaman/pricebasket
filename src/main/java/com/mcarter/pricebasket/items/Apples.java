@@ -1,6 +1,6 @@
 package com.mcarter.pricebasket.items;
 
-public class Apples extends Item {
+public class Apples implements Item {
 
 	private final int cost;
 

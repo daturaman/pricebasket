@@ -12,7 +12,7 @@ package com.mcarter.pricebasket.items;
  *
  * @author mcarter
  */
-public class Milk extends Item {
+public class Milk implements Item {
 
 	private final int cost;
 

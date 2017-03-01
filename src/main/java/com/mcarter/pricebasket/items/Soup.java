@@ -10,7 +10,7 @@ package com.mcarter.pricebasket.items;
 /**
  * @author mcarter
  */
-public class Soup extends Item {
+public class Soup implements Item {
 	private final int cost;
 
 	public Soup(int cost) {
